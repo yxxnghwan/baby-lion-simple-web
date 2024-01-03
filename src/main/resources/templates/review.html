@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰작성</title>
+</head>
+<body>
+
+이름: <input type="text" id="name"> <br />
+내용: <input type="text" id="content"> <br />
+<button onclick="createReview()">리뷰 등록</button>
+<div id="reviews">
+
+</div>
+
+</body>
+
+<script>
+    const createReview = async () => {
+        let name = document.getElementById("name").value;
+        let content = document.getElementById("content").value;
+        let body = {
+            name: name,
+            content: content
+        }
+        let response = await fetch("/reviews", {
+            method: "POST",
+            body: JSON.stringify(body),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        let responseBody = await response.json();
+
+        addReviewView(responseBody);
+    }
+
+    const deleteReview = async (id) => {
+        let response = await fetch("/reviews/" + id, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        let responseBody = await response.json();
+
+        document.getElementById("reviews").innerHTML = "";
+        for (const reviews of responseBody) {
+            addReviewView(reviews)
+        }
+    }
+
+    function addReviewView(responseBody) {
+        document.getElementById("reviews").innerHTML +=
+            responseBody.id + "  " + responseBody.name + " : " + responseBody.content
+            + "  <button onclick='deleteReview(" + responseBody.id + ")'>삭제</button>" + "<br/>"
+    }
+</script>
+</html>

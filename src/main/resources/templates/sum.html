@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sum Page</title>
+</head>
+<body>
+
+<input type="text" id="num1Input">
+<input type="text" id="num2Input">
+<button onclick="requestSum1()">더하기 버튼1</button>
+
+<h1 id="sumResult">결과: </h1>
+
+<input type="text" id="num1Input2">
+<input type="text" id="num2Input2">
+<button onclick="requestSum2()">더하기 버튼2</button>
+<h1 id="sumResult2">결과: </h1>
+
+<script>
+    const requestSum1 = async () => {
+        let num1 = document.getElementById("num1Input").value;
+        let num2 = document.getElementById("num2Input").value;
+        console.log(num1)
+        console.log(num2)
+        let response = await fetch("/sum?num1=" + num1 + "&num2=" + num2);
+        let data = await response.json();
+        console.log(data)
+        document.getElementById("sumResult").innerHTML = "결과: " + data.sum
+    }
+
+    const requestSum2 = async () => {
+        let num1 = document.getElementById("num1Input2").value;
+        let num2 = document.getElementById("num2Input2").value;
+        console.log(num1)
+        console.log(num2)
+        let body = {
+            num1: num1,
+            num2: num2
+        }
+        console.log("body: " + body)
+        let response = await fetch("/sum", {
+            method: "POST",
+            body: JSON.stringify(body),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        let data = await response.json();
+        console.log(data)
+        document.getElementById("sumResult2").innerHTML = "결과: " + data.sum
+    }
+</script>
+
+</body>
+</html>
